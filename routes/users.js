@@ -25,7 +25,8 @@ let users = [
 
 // GET request: Retrieve all users
 router.get("/",(req,res)=>{
-    res.send(users);
+    // Send a JSON response using method JSON.stringify() containing the users array, formatted with an indentation of 4 spaces for readability
+    res.send(JSON.stringify({users}, null, ));
 });
 
 //Exercise 3: Creating a GET by specific email method
@@ -54,17 +55,56 @@ router.post("/",(req,res)=>{
 });
 
 
+//Exercise 5: Using PUT method in this case we are going to update the DOB of specific email ID
 // PUT request: Update the details of a user by email ID
 router.put("/:email", (req, res) => {
-  // Copy the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+    //Extract email parameter and find users with matching email
+    const email = req.params.email;
+    let filtered_users = users.filter((user) => user.email === email);
+    
+    if(filtered_users.length > 0) {
+        //Select the first matching user and update attributes if provided
+        let filtered_user = filtered_users[0];
+
+        //Extract and update DOB if provided
+
+        let DOB = req.query.DOB;
+        if (DOB) {
+            filtered_user.DOB = DOB;
+        }
+
+        let firstName = req.query.firstName;
+        if (firstName) {
+            filtered_user.firstName = firstName;
+        }
+
+        let lastName = req.query.lastName;
+        if (lastName) {
+            filtered_user.lastName = lastName;
+        }
+
+        //Replace old user entry with updated user
+        users = users.filter((user) => user.email != email);
+        users.push(filtered_user);
+
+        //Send success msg indicating the user has been updated
+        res.send(`User with the email ${email} updated!`)
+    } else {
+        //Send error msg if no user found
+        res.send("Unable to find user😢")
+    }
 });
 
 
+//Exercise 6: Creating the delete method
 // DELETE request: Delete a user by email ID
 router.delete("/:email", (req, res) => {
-  // Copy the code here
-  res.send("Yet to be implemented")//This line is to be replaced with actual return value
+    //Extract the email parameter from the request URL
+    const email = req.params.email;
+    // Filter the users array to exclude the user with the specified email
+    users = users.filter((user) => user.email != email);
+    //Send a success message as the response, indicating the user has been deleted
+    res.send(`User with email ${email} deleted`);
 });
 
 module.exports=router;

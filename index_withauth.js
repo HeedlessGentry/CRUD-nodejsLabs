@@ -37,18 +37,18 @@ app.use(express.json());
 // User routes
 app.use("/user", routes);
 
-// Login endpoint
+// Login endpoint with user logging in using a username
 app.post("/login", (req, res) => {
     const user = req.body.user;
     if (!user) {
         return res.status(404).json({ message: "Body Empty" });
     }
-    // Generate JWT access token
+    // Generate JWT access token. 60*60(1hr) is time in sec the token is valid
     let accessToken = jwt.sign({
         data: user
     }, 'access', { expiresIn: 60 * 60 });
 
-    // Store access token in session
+    // Store access token in session so that only authenticated users can access the endpoints for that length of time.
     req.session.authorization = {
         accessToken
     }
