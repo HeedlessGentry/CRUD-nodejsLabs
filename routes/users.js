@@ -40,6 +40,33 @@ router.get("/:email",(req,res)=>{
     res.send(filtered_users);
 });
 
+//Practice 1. Getting users using a particula last name. Hint: Filter lastname from the users array
+router.get("/lastName/:lastName", (req,res) => {
+    const lastName = req.params.lastName;
+    let filtered_lastname = users.filter((user) => user.lastName === lastName);
+    res.send(filtered_lastname);
+});
+
+//Practice 2. Sorting users by DOB. Hint: Split the DOB & convert it to yyyy/mm/dd format and then sort it
+//Function to convert a date string in the format "dd-mm-yyyy" to a Date object
+function getDateFromString(strDate) {
+    let [dd, mm, yyyy] = strDate.split('-');
+    return new Date(yyyy + "/" + mm + "/" + dd);
+}
+
+//Define a route handler 4 GET requests to the "/sort" endpoint
+router.get("/sort", (req,res) => {
+    //Sort the users array by DOB in ascending order
+    let sorted_users = users.sort(function(a,b) {
+        let d1 = getDateFromString(a.DOB);
+        let d2 = getDateFromString(b.DOB);
+        return d1-d2;
+    });
+    //Send the sorted_users array as the response to the client
+    console.log(sorted_users);
+    res.send(sorted_users);
+});
+
 //Excercise 4: Creating the POST method
 // POST request: Create a new user
 router.post("/",(req,res)=>{
